@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Alerts Chart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F7F7F7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .chart-container {
+            width: 70%;
+            height: 50%;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <canvas id="riskChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.1.0"></script>
+    <script>
+        const ctx = document.getElementById('riskChart').getContext('2d');
+
+        // Sample dataset, which can be dynamically updated
+        const dataValues = [6, 3, 7, 4, 2, 5, 3, 2, 6, 7, 9, 5];
+        const maxValue = Math.max(...dataValues);
+
+        const data = {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: 'Risk Alerts',
+                data: dataValues,
+                borderColor: 'red',
+                backgroundColor: 'rgba(255, 165, 0, 0.1)',
+                pointBorderColor: dataValues.map(value => value === maxValue ? 'purple' : 'red'),
+                pointBorderWidth : 6,
+                pointRadius: 9,
+                fill: true,
+                tension: 0.4
+            }]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                plugins: {
+                    annotation: {
+                        annotations: {
+                            highPoint: {
+                                type: 'line',
+                                yMin: maxValue,
+                                yMax: maxValue,
+                                borderColor: 'blue',
+                                borderWidth: 2,
+                                label: {
+                                    content: `High ${maxValue.toFixed(2)}`,
+                                    enabled: true,
+                                    position: 'top',
+                                    backgroundColor: 'blue',
+                                    color: 'white'
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10
+                    }
+                },
+                maintainAspectRatio: false
+            }
+        };
+
+        const riskChart = new Chart(ctx, config);
+    </script>
+</body>
+</html>

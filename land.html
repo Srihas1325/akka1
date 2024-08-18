@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="land.css">
+    <style>
+        /* Toggle Button Style */
+        .toggle-button {
+            width: 40px;
+            height: 20px;
+            background-color: lightgray;
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-button::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-button.active {
+            background-color: blue;
+        }
+
+        .toggle-button.active::before {
+            transform: translateX(20px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="nav">
+            <div class="sbar">
+                <div class="search-icon">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search">
+                </div>
+            </div>
+            <div class="notify">
+                <i class="fa-solid fa-bell" id="icon"></i>
+            </div>
+            <div class="india"></div>
+            <div class="select">
+                <select id="selected">
+                    <option>Select Country</option>
+                    <option value="India">India</option>
+                    <option value="Japan">Japan</option>
+                    <option value="USA">USA</option>
+                </select>
+            </div>
+            <div class="user"></div>
+            <div class="name">
+                <p>Moni Roy</p>
+                <p>Admin</p>
+            </div>
+        </div>
+
+        <div class="content-container">
+            <aside class="sidebar">
+                <div class="sidebar-menu">
+                    <a href="#" class="active"><img src="dashboard.png" alt="Dashboard">Dashboard</a>
+                    <a href="#"><img src="vendor.png" alt="Warehouses">Vendor Warehouses</a>
+                    <a href="#"><img src="risk.png" alt="Alerts">Risk Alerts</a>
+                    <a href="#"><img src="analytics.png" alt="Analytics">Analytics</a>
+                    <a href="#"><img src="routes.png" alt="Routes">Routes</a>
+                    <div class="log">
+                        <a href="#"><img src="logout.png" alt="Logout">Logout</a>
+                        <div class="mode">
+                            <a href="#"><img src="mode.png" alt="Light Mode Icon">Light mode</a>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="main-content">
+                <div class="row1">
+                    <div class="box1">
+                        <div class="chart-container">
+                            <canvas id="riskChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="dashboard">
+                        <div class="card">
+                            <div class="head">
+                                <h3 style="padding-bottom: 5px;">Active Warehouses</h3>
+                                <img src="loc.png" style="margin-bottom: 6px;">
+                            </div><br>
+                            <div class="value">25 </div>
+                            <span class="increase">+12%</span>
+                            <p>from last month</p>
+                        </div>
+                        <div class="card">
+                            <div class="head">
+                                <h3 style="padding-bottom: 5px;">Alerts</h3>
+                                <img src="alerts.png" style="margin-bottom: 6px;">
+                            </div>
+                            <ul style="margin-top: 5px;">
+                                <li>❗Unexpected Temperature Rise</li>
+                                <li>❗Inventory Mismatch</li>
+                                <li>❗Security Breach Attempt</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <div class="head">
+                                <h3 style="padding-bottom: 5px;">Share Shipment</h3>
+                                <img src="ship.png" style="margin-bottom: 6px;">
+                            </div><br>
+                            <div class="value">2,502</div><br>
+                            <p>Shared deliveries in <a href="#">August</a></p>
+                        </div>
+                        <div class="card">
+                            <div class="head">
+                                <h3 style="padding-bottom: 5px;">Risk Control</h3>
+                                <img src="riskcontrol.png" style="margin-bottom: 6px;">
+                            </div>
+                            <ul class="risk-list">
+                                <li style="color: black;">Supply Chain Issue <span class="risk-bar"
+                                        style="width: 60%; background-color: #6374f8;"></span></li>
+                                <li style="color: black;">Equipment Maintenance <span class="risk-bar"
+                                        style="width: 80%; background-color: #5cd26d;"></span></li>
+                                <li style="color: black;">Safety Protocols <span class="risk-bar"
+                                        style="width: 40%; background-color: #f5a623;"></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div><br>
+                <div class="row2">
+
+                    <div class="content">
+                        <div class="box2">
+                            <div class="header">
+                                <h2 id="toggleHeading">Available Warehouses</h2>
+                                <div class="toggle-button" id="toggleButton"></div>
+                            </div>
+                            <div class="content">
+                                <div class="table-container">
+                                    <!-- Table 1 -->
+                                    <table id="table1">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Location</th>
+                                                <th>Space</th>
+                                                <th>Risk</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Ruecker</td>
+                                                <td>Laburnum</td>
+                                                <td>40%</td>
+                                                <td class="low-risk">Low</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Metz</td>
+                                                <td>Bartlett</td>
+                                                <td>50%</td>
+                                                <td class="mid-risk">Mid</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Keebler</td>
+                                                <td>Hilpertfield</td>
+                                                <td>20%</td>
+                                                <td class="low-risk">Low</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Monahan</td>
+                                                <td>West Rahul</td>
+                                                <td>40%</td>
+                                                <td class="high-risk">High</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Herman</td>
+                                                <td>Simonisberg</td>
+                                                <td>80%</td>
+                                                <td class="mid-risk">Mid</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lebsack</td>
+                                                <td>Fort Taya</td>
+                                                <td>30%</td>
+                                                <td class="low-risk">Low</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lemke</td>
+                                                <td>Giovannyview</td>
+                                                <td>10%</td>
+                                                <td class="high-risk">High</td>
+                                            </tr>
+                                            <tr>
+                                                <td>MacGyver</td>
+                                                <td>Encinitas</td>
+                                                <td>80%</td>
+                                                <td class="low-risk">Low</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <!-- Table 2 -->
+                                    <table id="table2" style="display: none;">
+                                        <thead>
+                                            <tr>
+                                                <th>Partner</th>
+                                                <th>Compatibility</th>
+                                                <th>Saving</th>
+                                                <th>Time Advantage</th>
+                                                <th>Best</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Flipkart</td>
+                                                <td>85%</td>
+                                                <td>₹50</td>
+                                                <td>15 mins</td>
+                                                <td><img src="star.png" style="width: 20px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Amazon</td>
+                                                <td>90%</td>
+                                                <td>₹40</td>
+                                                <td>30 mins</td>
+                                                <td><img src="star.png" style="width: 20px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Jabong</td>
+                                                <td>70%</td>
+                                                <td>₹60</td>
+                                                <td>45 mins</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Myntra</td>
+                                                <td>80%</td>
+                                                <td>₹55</td>
+                                                <td>40 mins</td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="map-container">
+                                    <!-- Placeholder for the map -->
+                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d243647.11462515324!2d-79.516951
+                                                !3d43.7181551!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDPCsDQ
+                                                yJzU0LjUiTiA3OcKwMjcnMzEuNiJX!5e0!3m2!1sen!2sca!4v1627439609445!5m2!1sen!2sca"
+                                        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.1.0"></script>
+    <script>
+        const ctx = document.getElementById('riskChart').getContext('2d');
+
+        const dataValues = [6, 3, 7, 4, 2, 5, 3, 2, 6, 7, 9, 5];
+        const maxValue = Math.max(...dataValues);
+
+        const data = {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: 'Risk Alerts',
+                data: dataValues,
+                borderColor: 'red',
+                backgroundColor: 'rgba(255, 165, 0, 0.1)',
+                pointBorderColor: dataValues.map(value => value === maxValue ? 'purple' : 'red'),
+                pointBorderWidth: 1,
+                pointRadius: 7,
+                fill: true,
+                tension: 0.4
+            }]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                plugins: {
+                    annotation: {
+                        annotations: {
+                            highPoint: {
+                                type: 'line',
+                                yMin: maxValue,
+                                yMax: maxValue,
+                                borderColor: 'blue',
+                                borderWidth: 2,
+                                label: {
+                                    content: `High ${maxValue.toFixed(2)}`,
+                                    enabled: true,
+                                    position: 'top',
+                                    backgroundColor: 'blue',
+                                    color: 'white'
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                maintainAspectRatio: false
+            }
+        };
+
+        const riskChart = new Chart(ctx, config);
+
+        // Toggle between tables
+        const toggleButton = document.getElementById('toggleButton');
+        const toggleHeading = document.getElementById('toggleHeading');
+        const table1 = document.getElementById('table1');
+        const table2 = document.getElementById('table2');
+        let toggleState = false;
+
+        toggleButton.addEventListener('click', function () {
+            toggleState = !toggleState;
+
+            if (toggleState) {
+                table1.style.display = 'none';
+                table2.style.display = 'table';
+                toggleButton.classList.add('active');
+                toggleHeading.textContent = 'Share Shipment';
+            } else {
+                table1.style.display = 'table';
+                table2.style.display = 'none';
+                toggleButton.classList.remove('active');
+                toggleHeading.textContent = 'Available Warehouses';
+            }
+        });
+    </script>
+</body>
+
+</html>
